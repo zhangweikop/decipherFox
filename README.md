@@ -5,13 +5,22 @@
 2. install some packages
 
    a. install expressjs using following command:
-      npm install express 
+   
+         **npm install express** 
       
    b. install body-parser package using following command:
-      npm install body-parser
+   
+         npm install body-parser
       
    c. install Multer using following command:
-      npm install multer
+   
+         npm install multer
 
 #run
 node index.js [portNumber]
+
+
+#API
+   POST  /postUpload/file
+| MEHOD        | API           | RESPONSE  |
+
