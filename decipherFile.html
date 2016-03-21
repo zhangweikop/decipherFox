@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>解码图片</title>
+		<style>
+		</style>
+		<script src="/scripts/jquery.min.js"></script>
+		<script type="text/javascript">
+	
+			$(document).ready(function(){
+
+			 	function getNewFile(){
+			 		$.get( '/api/getTask/file', function(data) {
+			 			if(data) {
+			 				var imageSrc = data.fileContent;
+				 			var fileId = data.fileId;
+				 			var img = new Image();
+				 			img.src = 'data:image/jpeg;base64,' + imageSrc;
+				 			$('#image').hide();
+				 			$('#image').html('');
+				 			$('#image')[0].dataset.fileId = fileId;
+				 			$('#description').val('');
+				 			$('#image').append(img); 
+				 			$('#image').slideDown('fast');
+			 			} else {
+
+				 			$('#image').html('No images');	
+				 			$('#image').slideDown('fast');
+				 			setTimeout(getNewFile, 500);
+			 			}
+			 			
+			 		}, 'json').fail(function() {
+					  	$('#image').html('<h2>cant get new image, please refresh the page</h2>');
+				 });
+			 	}
+			 	$('#finished').click(function(){
+			 		var fileId = $('#image')[0].dataset.fileId;
+			 		var description = $('#description').val().trim();
+					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
+				 			if(data) {
+				 				getNewFile();
+				 			}
+				 		}, 'json').fail(function() {
+						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h2>');
+					 });
+				 	});
+
+			 	getNewFile();
+				});
+		</script>
+	</head>
+	<body>
+		
+		<p>请在文本框中输入图片验证码的信息，当完成后，点击下方的“完成” 按钮</p>
+		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。</p>
+		<p>对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
+		<div id = 'result'></div>
+		<div id= 'image'></div>
+		<textarea id = 'description' name="textarea" rows="5" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
+		<div><button type="button" id= 'finished'>完成</button></div>
+		</form>
+	</body>
+</html>
