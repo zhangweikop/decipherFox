@@ -2,12 +2,86 @@
 <html>
 	<head>
 		<meta charset=utf-8>
-		<title>观测系统文件</title>
+		<title>管理员</title>
 		<style>
+		table {
+			    width: 400px;
+			}
+			td{
+				text-align: center;
+				border: 1px solid #ddd;
+			}
+			th {
+				text-align: center;
+				background-color: #4CAF50;
+			    height: 50px;
+			}
 		</style>
 		<script src="/scripts/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				function getAll(){
+				$.get( '/api/getAllUser', function(datas) {
+					if(datas){
+						$('#allUsers').html('');
+						for(var i = 0; i < datas.length; i++){
+							var data = datas[i];
+							var html = '<p>工作量统计</p><table>'+
+							  '<tr><th>category</th>'+
+							    '<th>score</th></tr>'+
+							    '<tr><td>用户名</td><td>'+ data.userName +'</td></tr>'+
+							  '<tr><td>总计</td><td>'+ data.total +'</td></tr>'+
+							  '<tr><td>未验证</td> <td>'+ data.unvirified +'</td></tr>'+
+							  '<tr><td>验证正确</td> <td>'+ data.correct +'</td></tr><table>';
+					  		$('#allUsers').append(html);
+						}
+					}
+				});
+			}
+			$('#addNew').click(function(){
+			 		var userName = $('#userid').val().trim();
+			 		var password1 = $('#psw').val().trim();
+			 		var password2 = $('#psw2').val().trim();
+			 		if(password1 !== password2) {
+			 			$('#result').html('<h4>两次密码输入不相同</h4>');
+			 			 return false;
+			 		} 
+			 		if(userName.length==0 || password1.length==0) {
+			 			$('#result').html('<h4>请输入规范的的用户名和密码</h4>');
+			 			 return false;
+			 		}
+					$.post( '/api/addNewUser', {userName: userName, password: password1}, function(data) {
+						if(!data) {
+							$('#result').html('<h4>添加用户不成功</h4>');
+						} else {
+							getAll();
+							$('#result').html('<h4>添加用户成功</h4>');
+							$('#result').children().css('color', '#4CAF50');
+						}
+					}, 'json').fail(function() {
+						$('#result').html('<h4>提交出错，请刷新页面重新操作</h4>');
+					 });
+				});
+			getAll();
+			setInterval(getAll, 500);
+
+												
+			});
+
+		</script>
 	</head>
 	<body>
-		coming soon
+	<div style = 'margin:10px 0px; font-size:130%'><div style = 'float:left' id='logSystem'>管理员</div><form action="/logout">
+    <input type="submit" value="重新登录">
+	</form></div>
+		<div id ='result' style ="color:red"></div>
+		<div><input type="text" placeholder = '新用户名' style= "border: 2px solid #4d79ff;" id="userid"></div>
+
+		<div><input type="password" placeholder = '密码' style= "border: 2px solid #4d79ff;" id="psw"></div>
+		<div><input type="password" placeholder = '再次输入密码' style= "border: 2px solid #4d79ff;" id="psw2"></div>
+
+		<div><button type="button" id= 'addNew'>添加新用户</button></div>
+		<p style = 'font-size:120%'>All Users:</p>
+		<div id='allUsers'></div>
 	</body>
 </html>

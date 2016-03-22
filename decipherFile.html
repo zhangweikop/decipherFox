@@ -4,13 +4,41 @@
 		<meta charset=utf-8>
 		<title>解码图片</title>
 		<style>
+		table {
+			    width: 400px;
+			}
+			td{
+				text-align: center;
+				border: 1px solid #ddd;
+			}
+			th {
+				text-align: center;
+				background-color: #4CAF50;
+			    height: 50px;
+			}
 		</style>
 		<script src="/scripts/jquery.min.js"></script>
 		<script type="text/javascript">
-	
+		
 			$(document).ready(function(){
+				function updateScore(){
+			 		$.get( '/api/getUserStats', function(data) {
+			 			if(data) {
+			 			var html = '<p>工作量统计</p><table>'+
+									  '<tr><th>category</th>'+
+									    '<th>score</th></tr>'+
+									  '<tr><td>总计</td><td>'+ data.total +'</td></tr>'+
+									  '<tr><td>未验证</td> <td>'+ data.unvirified +'</td></tr>'+
+									  '<tr><td>验证正确</td> <td>'+ data.correct +'</td></tr><table>';
+						$('#userStats').html(html);
+						$('#userName').text(data.userName);
+						}
+			 		}, 'json');
 
+				}
+				updateScore();
 			 	function getNewFile(){
+			 		updateScore();
 			 		$.get( '/api/getTask/file', function(data) {
 			 			if(data) {
 			 				var imageSrc = data.fileContent;
@@ -25,13 +53,13 @@
 				 			$('#image').slideDown('fast');
 			 			} else {
 
-				 			$('#image').html('No images');	
+				 			$('#image').html('No images, 没有更多的图片， 请耐心等待');	
 				 			$('#image').slideDown('fast');
 				 			setTimeout(getNewFile, 500);
 			 			}
 			 			
 			 		}, 'json').fail(function() {
-					  	$('#image').html('<h2>cant get new image, please refresh the page</h2>');
+					  	$('#image').html('<h2>cant get new image, please refresh the page 请刷新网页</h2>');
 				 });
 			 	}
 			 	$('#finished').click(function(){
@@ -39,10 +67,13 @@
 			 		var description = $('#description').val().trim();
 					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
 				 			if(data) {
+				 				$('#result').html('<h4>提交成功，感谢您的工作!</h2>');
+
 				 				getNewFile();
+
 				 			}
 				 		}, 'json').fail(function() {
-						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h2>');
+						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h4>');
 					 });
 				 	});
 
@@ -51,14 +82,19 @@
 		</script>
 	</head>
 	<body>
-		
+		<div style = 'font-size:130%'><div style = 'float:left' id='logSystem'>user:<span style = 'padding: 0px 5px; color: #666666' id='userName'></span></div><form action="/logout">
+    <input type="submit" value="重新登录">
+	</form></div>
 		<p>请在文本框中输入图片验证码的信息，当完成后，点击下方的“完成” 按钮</p>
 		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。</p>
 		<p>对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
-		<div id = 'result'></div>
+		
 		<div id= 'image'></div>
 		<textarea id = 'description' name="textarea" rows="5" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
-		</form>
+	
+		<div id = 'result'></div>
+		<div id = 'userStats'></div>
+
 	</body>
 </html>

@@ -17,6 +17,9 @@
    c. install Multer using following command:
    
          npm install multer
+   d. install basic-auth using following command:
+   
+		 npm install basic-auth
 
 #run
 in the root directory, type the following command in command line or linux bash
@@ -38,6 +41,15 @@ You can also use the API call to upload the file and decipher file.
          Response: {fileId: 'xxxx' }
          
          Description: upload a file, and get a fileId if upload successfully
+
+  POST  /postUploadLong/file
+         
+         Request: file0
+         Response: { fileId: 'xxxxx', 
+                     description: 'xxx'
+                   }
+         
+         Description: upload a file, and wait until the file is deciphered or timeout.
          
    GET   /getDeciphered/file/{fileId}
    
@@ -65,3 +77,7 @@ You can also use the API call to upload the file and decipher file.
          Description: send the deciphered result of the file to server.
    
 
+#USER MANAGEMENT
+    
+    User file is stored in users/user.txt
+    

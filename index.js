@@ -1,7 +1,9 @@
+"use strict";
+const EventEmitter = require('events');
 var express = require('express');
 var simpleDataStore = require('./dataStore.js')
 var apiRouter = require('./api.js');
-
+var UserInfo = require('./userManagement.js');
 var jsResource = express.static('./scripts');
 
 var app = express();
@@ -11,13 +13,34 @@ app.use('/scripts', jsResource);
 
 var redisInstance = false;
 var dataStore = {};
+var dataStoreConfiguration = {
+    capacity : 1000,
+    additionalLife: 40*1000,
+    rollbackTime: 65*1000};
 if(redisInstance) {
 	//initialize and connect to the Redis Store.
 	// the Redis is recommended to run on Linux.
 } else {
-	simpleDataStore(dataStore);
+	simpleDataStore(dataStore, dataStoreConfiguration);
 	apiRouter.initializeDataStore(dataStore);
 }
+
+
+//initialize the defer response support
+class DeferResponseList extends EventEmitter {}
+
+var deferResponseList = new DeferResponseList();
+
+apiRouter.initializeDeferResponseList(deferResponseList);
+
+
+var usersInfo = UserInfo(true, 20*1000);
+
+apiRouter.initializeUsersInfo(usersInfo);
+
+var authNormalUser = apiRouter.normalAuthHandler;
+var authAdMinUser = apiRouter.adminAuthHandler 
+
 
 var options = {
     root : '.',
@@ -43,11 +66,24 @@ app.get('/', function (req, res, next) {
 
 app.use('/api', apiRouter);
 
-
 var htmlUpload = 'fileUpload.html';
 
-app.get('/upload', function (req, res, next) {
+app.get('/upload',  function (req, res, next) {
   res.sendFile(htmlUpload, options, function (err) {
+    if (err) {
+      console.log(err);
+      res.status(err.status).end();
+    }
+    else {
+      //console.log('Sent:', fileName);
+    }
+  });
+});
+
+var htmlUpload2 = 'fileUploadLong.html';
+
+app.get('/uploadLong', function (req, res, next) {
+  res.sendFile(htmlUpload2, options, function (err) {
     if (err) {
       console.log(err);
       res.status(err.status).end();
@@ -60,7 +96,7 @@ app.get('/upload', function (req, res, next) {
 
 
 var htmlManager = 'manager.html';
-app.get('/manager', function (req, res, next) {
+app.get('/manager', authAdMinUser, function (req, res, next) {
   res.sendFile(htmlManager, options, function (err) {
     if (err) {
       console.log(err);
@@ -73,7 +109,7 @@ app.get('/manager', function (req, res, next) {
 });
 
 var htmlDecipher = 'decipherFile.html';
-app.get('/decipher', function (req, res, next) {
+app.get('/decipher', authNormalUser, function (req, res, next) {
   res.sendFile(htmlDecipher, options, function (err) {
     if (err) {
       console.log(err);
@@ -84,6 +120,11 @@ app.get('/decipher', function (req, res, next) {
     }
   });
 });
+
+app.get('/logout', function (req, res){
+  res.sendStatus(401);
+});
+
 
 app.get('*', function(req, res){
   res.status(404).send('page not found!');

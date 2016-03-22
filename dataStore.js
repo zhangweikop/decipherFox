@@ -1,10 +1,14 @@
-function dataStoreWraper(dataStore) {
+"use strict";
+const EventEmitter = require('events');
+var eventEmitter = new EventEmitter.EventEmitter();
+
+function dataStoreWraper(dataStore, dataStoreConfiguration) {
 	if(!dataStore.store) {
 		dataStore.store = [];
 		dataStore.lock = [];
 		dataStore.processingStore = {};
 		dataStore.backgroundTasks = [];
-
+		dataStore.messager = eventEmitter;
 		var clearTask = function() {
 			/*
 			var keys=[];
@@ -30,18 +34,29 @@ function dataStoreWraper(dataStore) {
 	dataStore.acuireLock = function(){
 	}
 
-	// remove from the data store
-	dataStore.remove = function(key) {
-
+	//try remove from the data store
+	dataStore.tryRemove = function(key) {
+		dataStore.messager.emit('remove'+key);
 	}
-	dataStore.enqueue = function(key, value) {
+	dataStore.enqueue = function(key, value, removeAction) {
 		store.push({key:key, value: value});
+		if(removeAction) {
+			dataStore.messager.once('remove'+key, removeAction);
+		}
+		while(store.length > dataStoreConfiguration.capacity/2) {
+			var data = store.shift();
+			this.tryRemove(data.key);
+		}
 		return true;
 	}
-	dataStore.finishTask = function(key, description) {
+	dataStore.finishTask = function(key, description, finishAction) {
 		if(processingStore[key]) {
 			processingStore[key].status = 1;
 			processingStore[key].description = description;
+			if(finishAction)
+			{
+				finishAction();
+			}
 		}
 	};
 	dataStore.fetchFinished = function(key) {
@@ -53,13 +68,13 @@ function dataStoreWraper(dataStore) {
 			var finishKey = key;
 			setTimeout(function() {
 				delete processingStore[finishKey];
-			},40*1000);
+			},dataStoreConfiguration.additionalLife);
 			return processingStore[key].description;
 		} else {
 			return null;
 		}
 	}
-	dataStore.dequeue = function() {
+	dataStore.dequeue = function(worker) {
 		var foundOne = false;
 		var task;
 		while(!foundOne&& store.length>0) {
@@ -68,11 +83,13 @@ function dataStoreWraper(dataStore) {
 				foundOne = false;
 				task = null;
 			} else {
-				processingStore[task.key] = {img: task.value, status: 0, description: ''};
+				processingStore[task.key] = {img: task.value, status: 0, description: null, worker: worker};
 				var oldTask = task;
 				setTimeout(function() {
-					store.push(oldTask);
-				},80*1000);
+					if(processingStore[oldTask.key] && (!processingStore[oldTask.key].description)) {
+						store.push(oldTask);
+					}
+				},dataStoreConfiguration.rollbackTime);
 				foundOne = true;
 			}
 		}
