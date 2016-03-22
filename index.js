@@ -1,5 +1,6 @@
 "use strict";
-const EventEmitter = require('events');
+var EventEmitter = require('events');
+var util = require('util');
 var express = require('express');
 var simpleDataStore = require('./dataStore.js')
 var apiRouter = require('./api.js');
@@ -27,7 +28,9 @@ if(redisInstance) {
 
 
 //initialize the defer response support
-class DeferResponseList extends EventEmitter {}
+function DeferResponseList(){}
+
+util.inherits(DeferResponseList, EventEmitter);
 
 var deferResponseList = new DeferResponseList();
 
@@ -121,9 +124,6 @@ app.get('/decipher', authNormalUser, function (req, res, next) {
   });
 });
 
-app.get('/logout', function (req, res){
-  res.sendStatus(401);
-});
 
 
 app.get('*', function(req, res){

@@ -1,1 +1,1 @@
-{"test":{"password":"test","finished":0,"correct":0,"unvirified":0,"total":0},"weizhang":{"password":"123","total":0,"correct":0,"unvirified":0},"yizhang":{"password":"123","total":0,"correct":0,"unvirified":0},"admin":{"password":"WelcomeAdmin","total":2,"correct":0,"unvirified":2}}
+{"test":{"password":"test","finished":0,"correct":0,"unvirified":0,"total":0},"weizhang":{"password":"123","total":0,"correct":0,"unvirified":0},"yizhang":{"password":"123","total":0,"correct":0,"unvirified":0},"admin":{"password":"WelcomeAdmin","total":1,"correct":0,"unvirified":1}}

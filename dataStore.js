@@ -1,5 +1,5 @@
 "use strict";
-const EventEmitter = require('events');
+var EventEmitter = require('events');
 var eventEmitter = new EventEmitter.EventEmitter();
 
 function dataStoreWraper(dataStore, dataStoreConfiguration) {

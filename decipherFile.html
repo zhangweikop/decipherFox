@@ -4,6 +4,18 @@
 		<meta charset=utf-8>
 		<title>解码图片</title>
 		<style>
+		#finished{
+			font-size: 18px; 
+			color: #563d7c;
+			padding: 10px 16px;
+			border: 2px solid #563d7c;
+			background-color: white;
+
+		}
+		#finished:active, #finished:hover  { 
+		    color: white;
+		    background-color: #563d7c;
+		}
 		table {
 			    width: 400px;
 			}
@@ -19,8 +31,11 @@
 		</style>
 		<script src="/scripts/jquery.min.js"></script>
 		<script type="text/javascript">
-		
+
 			$(document).ready(function(){
+				$('#logoutButton').click(function(){
+					document.execCommand('ClearAuthenticationCache');
+				})
 				function updateScore(){
 			 		$.get( '/api/getUserStats', function(data) {
 			 			if(data) {
@@ -49,6 +64,8 @@
 				 			$('#image').html('');
 				 			$('#image')[0].dataset.fileId = fileId;
 				 			$('#description').val('');
+				 			
+				 			
 				 			$('#image').append(img); 
 				 			$('#image').slideDown('fast');
 			 			} else {
@@ -78,22 +95,29 @@
 				 	});
 
 			 	getNewFile();
-				});
+		 		setTimeout(function(){
+		            $('#description').focus();
+		       	}, 5);
+			});
 		</script>
 	</head>
 	<body>
-		<div style = 'font-size:130%'><div style = 'float:left' id='logSystem'>user:<span style = 'padding: 0px 5px; color: #666666' id='userName'></span></div><form action="/logout">
-    <input type="submit" value="重新登录">
-	</form></div>
+		<div style = 'font-size:130%'>
+			<div style = 'float:left' id='logSystem'>user:<span style = 'padding: 0px 5px; color: #666666' id='userName'></span></div>
+   			 <form action="/api/logout">
+    		<input type="submit" id = 'logoutButton' value="重新登录">
+			</form>
+			</div>
 		<p>请在文本框中输入图片验证码的信息，当完成后，点击下方的“完成” 按钮</p>
 		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。</p>
 		<p>对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
 		
 		<div id= 'image'></div>
-		<textarea id = 'description' name="textarea" rows="5" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
+		<div id = 'result'></div>
+		<textarea id = 'description' name="textarea" rows="3" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
 	
-		<div id = 'result'></div>
+		
 		<div id = 'userStats'></div>
 
 	</body>

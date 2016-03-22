@@ -13,7 +13,7 @@ function loadUserInfo (clearScore, backUpInterval) {
     }
   }
   function saveToDisk() {
-    fs.writeFile('./users/user.txt', JSON.stringify(usersObject), (err) => {
+    fs.writeFile('./users/user.txt', JSON.stringify(usersObject), function(err){
       if (err) throw err;
       console.log('user info saved!');
     });
@@ -57,7 +57,7 @@ function loadUserInfo (clearScore, backUpInterval) {
      usersObject[userName].total = total||0;
      usersObject[userName].correct = correct||0;
      usersObject[userName].unvirified = unvirified|| 0;
-
+     saveToDisk();
      return true;
   }
   function getAllUsers(){

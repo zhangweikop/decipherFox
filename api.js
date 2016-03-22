@@ -64,12 +64,18 @@ router.initializeUsersInfo = function(usersInfo) {
 	router.usersInfo = usersInfo;
 	router.usersInfo.addUser(admin.name, admin.pass);
 }
+var unauthHtml = '<!DOCTYPE html><html><head><meta charset=utf-8><title>unauthorized</title> </head><body><p>未登录状态</p><div><a href="/"> 回主页</a></div></body></html>';
 
-var authNormalUser = function (req, res, next) {
-  function unauthorized(res) {
+function logOutUser(res) {
+
+      return res.status(401).send(unauthHtml);
+}
+ function unauthorized(res) {
     res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-    return res.sendStatus(401);
+    return res.status(401).send(unauthHtml);
   };
+var authNormalUser = function (req, res, next) {
+ 
 
   var user = basicAuth(req);
 
@@ -86,11 +92,6 @@ var authNormalUser = function (req, res, next) {
   };
 };
 var authAdMinUser = function (req, res, next) {
-  function unauthorized(res) {
-    res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-    return res.sendStatus(401);
-  };
-
   var user = basicAuth(req);
 
   if (!user || !user.name || !user.pass) {
@@ -106,6 +107,9 @@ var authAdMinUser = function (req, res, next) {
 router.normalAuthHandler = authNormalUser;
 router.adminAuthHandler = authAdMinUser;
 
+router.get('/logout', function (req, res){
+    logOutUser(res);
+});
 
 router.post('/postUploadLong/file', uploadMul.any());
 router.post('/postUploadLong/file',function(req, res) {
@@ -195,6 +199,7 @@ router2.get('*',  function (req, res){
 router.use('/getDeciphered/file/', router2);
 
 router.get('/getTask/file', router.normalAuthHandler, function (req, res){
+  res.set('Cache-control', 'no-cache');
   var userName = req.userName;
   var task = router.dataStore.dequeue(userName);
   if(task) {

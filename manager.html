@@ -20,6 +20,10 @@
 		<script src="/scripts/jquery.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
+				$('#logoutButton').click(function(){
+					document.execCommand('ClearAuthenticationCache');
+				})
+
 				function getAll(){
 				$.get( '/api/getAllUser', function(datas) {
 					if(datas){
@@ -71,9 +75,13 @@
 		</script>
 	</head>
 	<body>
-	<div style = 'margin:10px 0px; font-size:130%'><div style = 'float:left' id='logSystem'>管理员</div><form action="/logout">
-    <input type="submit" value="重新登录">
-	</form></div>
+	<div style = 'margin:10px 0px; font-size:130%'>
+		<div style = 'float:left' id='logSystem'>管理员</div>   
+
+	<form action="/api/logout">
+    <input type="submit" id = 'logoutButton' value="重新登录">
+	</form>
+ </div>
 		<div id ='result' style ="color:red"></div>
 		<div><input type="text" placeholder = '新用户名' style= "border: 2px solid #4d79ff;" id="userid"></div>
 
