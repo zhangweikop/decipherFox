@@ -1,6 +1,9 @@
 var fs = require('fs');
 function loadUserInfo (clearScore, backUpInterval) {
   var jsonString = fs.readFileSync('./users/user.txt', 'utf8');
+  if(jsonString.length === 0) {
+    jsonString === '{}';
+  }
   var usersObject = JSON.parse(jsonString);
   for(var user in usersObject) {
     if(usersObject.hasOwnProperty(user)) {
@@ -14,8 +17,9 @@ function loadUserInfo (clearScore, backUpInterval) {
   }
   function saveToDisk() {
     fs.writeFile('./users/user.txt', JSON.stringify(usersObject), function(err){
-      if (err) throw err;
-      console.log('user info saved!');
+      if (err) {
+        console.log('err when save user info');
+        throw err;}
     });
   }
   (function backUpPeriodically(){

@@ -4,6 +4,9 @@
 		<meta charset=utf-8>
 		<title>解码图片</title>
 		<style>
+		body{
+			margin: 20px;
+		}
 		#finished{
 			font-size: 18px; 
 			color: #563d7c;
@@ -15,6 +18,20 @@
 		#finished:active, #finished:hover  { 
 		    color: white;
 		    background-color: #563d7c;
+		}
+		.alertmessage{
+			padding:15px;
+			font-weight: bold;
+			color: #8a6d3b;
+		    background-color: #fcf8e3;
+		    border-color: #faebcc;
+		}
+		.resultmessage{
+			padding: 15px;
+			font-weight: bold;
+			color: #31708f;
+    		background-color: #d9edf7;
+   			 border-color: #bce8f1;
 		}
 		table {
 			    width: 400px;
@@ -70,7 +87,7 @@
 				 			$('#image').slideDown('fast');
 			 			} else {
 
-				 			$('#image').html('No images, 没有更多的图片， 请耐心等待');	
+				 			$('#image').html('<div class = "alertmessage">No images, 没有更多的图片， 请耐心等待</div>');	
 				 			$('#image').slideDown('fast');
 				 			setTimeout(getNewFile, 500);
 			 			}
@@ -85,10 +102,8 @@
 					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
 				 			if(data) {
 				 				$('#result').html('<h4>提交成功，感谢您的工作!</h2>');
-
-				 				getNewFile();
-
 				 			}
+				 			getNewFile();
 				 		}, 'json').fail(function() {
 						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h4>');
 					 });
@@ -98,6 +113,14 @@
 		 		setTimeout(function(){
 		            $('#description').focus();
 		       	}, 5);
+		       	//bind enter key
+		       	$( "#description" ).keydown(function( event ) {
+		       		if(event.which === 13) {
+		       			$('#finished').click();
+		       			return false;
+		       		}
+
+		       	});
 			});
 		</script>
 	</head>
@@ -112,8 +135,9 @@
 		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。</p>
 		<p>对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
 		
-		<div id= 'image'></div>
-		<div id = 'result'></div>
+		<div id = 'result' class = 'resultmessage'></div>
+
+		<div id= 'image'  ></div>
 		<textarea id = 'description' name="textarea" rows="3" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
 	

@@ -7,7 +7,6 @@ var multer = require('multer');
 var bodyParser = require('body-parser');
 var storage = multer.memoryStorage()
 var uploadMul = multer({ storage: storage })
-
 var router2 = express.Router();
 
 module.exports = router;
@@ -16,10 +15,13 @@ module.exports = router;
 var jsonParser = bodyParser.json(); // for parsing application/json
 var urlParser = bodyParser.urlencoded({ extended: true }); // for parsing application/x-www-form-urlencoded
 
+//some configuration
+var longPostTimeOut = 80*1000;
 router.initializeDataStore = function(dataStore) {
   router.dataStore = dataStore;
 }
 
+ 
 router.initializeDeferResponseList = function(deferResponseList){
 	router.deferResponseList = deferResponseList;
 
@@ -36,7 +38,7 @@ router.initializeDeferResponseList = function(deferResponseList){
 	          		});
 				}
 			
-				}, 60*1000);
+				}, longPostTimeOut);
   		this.once(fileId, function(fileDescription){
 	     var description = router.dataStore.fetchFinished(fileId);
 	      if(description === false || description=== null) {
@@ -210,6 +212,7 @@ router.get('/getTask/file', router.normalAuthHandler, function (req, res){
 });
 
 router.get('/getUserStats', router.normalAuthHandler, function (req, res){
+  res.set('Cache-control', 'no-cache');
   var userName = req.userName;
   var info =  router.usersInfo.getUserStats(userName);
 
@@ -217,9 +220,27 @@ router.get('/getUserStats', router.normalAuthHandler, function (req, res){
 });
 
 router.get('/getAllUser', router.adminAuthHandler, function (req, res){
+  res.set('Cache-control', 'no-cache');
   var infos =  router.usersInfo.getAllUsers();
   res.json(infos);
 });
+
+router.get('/getAllImagesInfo', router.adminAuthHandler, function (req, res){
+   res.set('Cache-control', 'no-cache');
+  var infos =  router.dataStore.getAllInfo();
+  res.json(infos);
+});
+
+router.get('/getOriginal/file/*', function(req,res){
+	var id = req.path.split('/').pop();
+	var  data = router.dataStore.getImage(id)
+	if(!data){
+		res.json(false);
+	} else {
+		res.json({fileId: data.key, description: data.description||'', fileContent: data.value, status: data.status});
+	}
+});
+
 
 router.post('/addNewUser',  jsonParser, urlParser, router.adminAuthHandler, function (req, res){
    var reqBody = req.body;

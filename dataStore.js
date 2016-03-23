@@ -33,13 +33,38 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 	var processingStore = dataStore.processingStore;
 	dataStore.acuireLock = function(){
 	}
+	dataStore.getImage = function(id){
+		if(processingStore.hasOwnProperty(id)){
+			return processingStore[id]; 
+		}
+		for(var i =0;i<store.length;i++){
+			if(id=== store[i].key){
+				return store[i];
+			}
+		}
+		return null;
 
+	}
+	dataStore.getAllInfo = function () {
+		var waitings = [];
+		var processings = [];
+		for(var i = 0; i < store.length; i++) {
+			waitings.push(store[i].key);
+		}
+		for(var key in processingStore){
+			if(processingStore.hasOwnProperty(key))
+			{
+			 processings.push({key: key, worker: processingStore[key].worker, status: processingStore[key].status});
+			}
+		}
+		return{waitings: waitings, processings:processings};
+	}
 	//try remove from the data store
 	dataStore.tryRemove = function(key) {
 		dataStore.messager.emit('remove'+key);
 	}
 	dataStore.enqueue = function(key, value, removeAction) {
-		store.push({key:key, value: value});
+		store.push({key:key, value: value, status:0});
 		if(removeAction) {
 			dataStore.messager.once('remove'+key, removeAction);
 		}
@@ -51,7 +76,7 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 	}
 	dataStore.finishTask = function(key, description, finishAction) {
 		if(processingStore[key]) {
-			processingStore[key].status = 1;
+			processingStore[key].status = 2;
 			processingStore[key].description = description;
 			if(finishAction)
 			{
@@ -63,8 +88,8 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 		if (!processingStore.hasOwnProperty(key)) {
 			return false;
 		}
-		if(processingStore[key].status > 0) {
-			processingStore[key].status = -1;
+		if(processingStore[key].status == 2) {
+			processingStore[key].status = 3;
 			var finishKey = key;
 			setTimeout(function() {
 				delete processingStore[finishKey];
@@ -83,11 +108,12 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 				foundOne = false;
 				task = null;
 			} else {
-				processingStore[task.key] = {img: task.value, status: 0, description: null, worker: worker};
+				processingStore[task.key] = {value: task.value, status: 1, description: null, worker: worker};
 				var oldTask = task;
 				setTimeout(function() {
-					if(processingStore[oldTask.key] && (!processingStore[oldTask.key].description)) {
-						store.push(oldTask);
+					if(processingStore[oldTask.key] && (processingStore[oldTask.key].status === 1)) {
+						store.unshift(oldTask);
+						delete processingStore[task.key];
 					}
 				},dataStoreConfiguration.rollbackTime);
 				foundOne = true;

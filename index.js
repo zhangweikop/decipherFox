@@ -1,5 +1,6 @@
 "use strict";
 var EventEmitter = require('events');
+var fs = require('fs');
 var util = require('util');
 var express = require('express');
 var simpleDataStore = require('./dataStore.js')
@@ -17,7 +18,7 @@ var dataStore = {};
 var dataStoreConfiguration = {
     capacity : 1000,
     additionalLife: 40*1000,
-    rollbackTime: 65*1000};
+    rollbackTime: 120*1000};
 if(redisInstance) {
 	//initialize and connect to the Redis Store.
 	// the Redis is recommended to run on Linux.
@@ -111,6 +112,16 @@ app.get('/manager', authAdMinUser, function (req, res, next) {
   });
 });
 
+var htmlviewFile = 'viewFile.html';
+app.get('/viewFile/*',  authAdMinUser, function (req, res, next) {
+    fs.readFile(htmlviewFile, "utf8", function(err, data){
+    if(err)  res.status(500).end();
+  
+    var id = req.path.split('/').pop();
+    var resultHtml = data.replace('FILIDDILIF', id);
+    res.send(resultHtml);
+});
+});
 var htmlDecipher = 'decipherFile.html';
 app.get('/decipher', authNormalUser, function (req, res, next) {
   res.sendFile(htmlDecipher, options, function (err) {

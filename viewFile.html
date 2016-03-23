@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>view file</title>
+		<style>
+		body{
+			margin: 20px;
+		}
+		#finished{
+			font-size: 18px; 
+			color: #563d7c;
+			padding: 10px 16px;
+			border: 2px solid #563d7c;
+			background-color: white;
+
+		}
+		#finished:active, #finished:hover  { 
+		    color: white;
+		    background-color: #563d7c;
+		}
+		.alertmessage{
+			padding:15px;
+			font-weight: bold;
+			color: #8a6d3b;
+		    background-color: #fcf8e3;
+		    border-color: #faebcc;
+		}
+		.resultmessage{
+			padding: 15px;
+			font-weight: bold;
+			color: #31708f;
+    		background-color: #d9edf7;
+   			 border-color: #bce8f1;
+		}
+		table {
+			    width: 400px;
+			}
+			td{
+				text-align: center;
+				border: 1px solid #ddd;
+			}
+			th {
+				text-align: center;
+				background-color: #4CAF50;
+			    height: 50px;
+			}
+		</style>
+		<script src="/scripts/jquery.min.js"></script>
+		<script type="text/javascript">
+
+			$(document).ready(function(){
+				var fileId = $('#fileId').text().trim();
+			 	function getFile(){
+			 		$.get( '/api/getOriginal/file/'+fileId, function(data) {
+			 			if(data) {
+			 				var imageSrc = data.fileContent;
+				 			var img = new Image();
+				 			img.src = 'data:image/jpeg;base64,' + imageSrc;
+				 			$('#image').html('');
+				 			$('#image')[0].dataset.fileId = fileId;
+				 			$('#description').val(data.description || '');
+				 			if(data.status < 2){
+				 			 	$('#result').html('<h2>请耐心等待结果</h2>');
+				 			}else {
+				 			 	$('#result').html('<h2>结果如下</h2>');
+				 			}
+				 			
+				 			$('#image').append(img); 
+				 			$('#image').slideDown('fast');
+			 			} else {
+				 			setTimeout(getNewFile, 500);
+			 			}
+			 			
+			 		}, 'json').fail(function() {
+					  	$('#image').html('<h2>cant get the image, please refresh the page 请刷新网页</h2>');
+				 });
+			 	}
+				getFile();
+			 	setInterval(getFile, 500);
+			 	
+		
+			});
+		</script>
+	</head>
+	<body>
+		 
+ 		<div id='fileId'>FILIDDILIF</div>
+		<div id= 'image'></div>
+		<div id = 'result' class= 'resultmessage'></div>
+		<textarea disabled id = 'description' name="textarea" rows="3" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%"></textarea>
+ 	
+	
+	</body>
+</html>

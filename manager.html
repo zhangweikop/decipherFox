@@ -4,16 +4,25 @@
 		<meta charset=utf-8>
 		<title>管理员</title>
 		<style>
+		body{
+			margin: 20px;
+		}
 		table {
-			    width: 400px;
+			    min-width: 300px;
 			}
-			td{
+		td{
 				text-align: center;
 				border: 1px solid #ddd;
 			}
-			th {
+		#allUsers	th {
 				text-align: center;
 				background-color: #4CAF50;
+			    height: 50px;
+			}
+		#allfiless	th {
+				min-width: 50px;
+				text-align: center;
+				background-color: #ffcc00;
 			    height: 50px;
 			}
 		</style>
@@ -39,6 +48,41 @@
 							  '<tr><td>验证正确</td> <td>'+ data.correct +'</td></tr><table>';
 					  		$('#allUsers').append(html);
 						}
+					}
+				});
+
+				$.get('/api/getAllImagesInfo', function(datas){
+					if(datas){
+						$('#allfiless').html('');
+						var waitings =datas.waitings;
+						var processings = datas.processings;
+						var html = '<p>系统当前文件信息</p><table>'+
+							  '<tr><th>文件</th>'+
+							  '<th>创建时间</th>'+
+							   '<th>状态</th>'+
+							    '<th>当前工作者</th></tr>';
+						for(var i =0; i< processings.length;i++) {
+							var key = processings[i].key;
+							var timestamp = key.split('n')[0];
+							var seconds = (Date.now()-parseFloat(timestamp))/1000;
+							var worker = processings[i].worker;
+							var status = '处理中';
+							if(processings[i].status===2) {
+								status = '处理完成'
+							}
+							if(processings[i].status>2) {
+								status = '结果已被成功读取'
+							}
+						html+= '<tr><td><a target="_blank" href="/viewFile/'+key+'">'+ key +'</a></td><td>'+ seconds+' ago' +'</td><td>'+status+'</td><td>'+(worker||'') +'</td></tr>';
+
+						}	
+						for(var i=0; i< waitings.length;i++) {
+							var key = waitings[i];
+							var timestamp = key.split('n')[0];
+							var seconds = (Date.now()-parseFloat(timestamp))/1000;
+						html+= '<tr><td><a target="_blank" href="/viewFile/'+key+'">'+ key +'</a></td><td>'+ seconds+' ago' +'</td><td>等待处理</td><td>'+('') +'</td></tr>';
+						}
+						$('#allfiless').append(html);	
 					}
 				});
 			}
@@ -90,6 +134,9 @@
 
 		<div><button type="button" id= 'addNew'>添加新用户</button></div>
 		<p style = 'font-size:120%'>All Users:</p>
-		<div id='allUsers'></div>
+		<div id='allUsers' style = 'width:410px; float:left'></div>
+		<div id='allfiless' style = 'width:400px; float:left'></div>
+		<div style = 'clear:left'></div>
+
 	</body>
 </html>
