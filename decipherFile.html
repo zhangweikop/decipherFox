@@ -7,6 +7,18 @@
 		body{
 			margin: 20px;
 		}
+		#myProgress {
+		    position: relative;
+		    width: 100%;
+		    height: 30px;
+		    background-color: grey;
+		}
+		#myBar {
+		    position: absolute;
+		    width: 1%;
+		    height: 100%;
+		    background-color: #337ab7;
+		}
 		#finished{
 			font-size: 18px; 
 			color: #563d7c;
@@ -48,8 +60,22 @@
 		</style>
 		<script src="/scripts/jquery.min.js"></script>
 		<script type="text/javascript">
-
-			$(document).ready(function(){
+			function moveProgress() {
+			    var elem = document.getElementById("myBar"); 
+			    var width = 1;
+			    var id = setInterval(frame, 30);
+			    function frame() {
+			        if (width >= 100) {
+			            clearInterval(id);
+			            moveProgress();
+			        } else {
+			            width++; 
+			            elem.style.width = width + '%'; 
+			        }
+			    }
+			}
+						$(document).ready(function(){
+							moveProgress();
 				$('#logoutButton').click(function(){
 					document.execCommand('ClearAuthenticationCache');
 				})
@@ -85,11 +111,14 @@
 				 			
 				 			$('#image').append(img); 
 				 			$('#image').slideDown('fast');
+				 			$('#myProgress').hide();
 			 			} else {
 
 				 			$('#image').html('<div class = "alertmessage">No images, 没有更多的图片， 请耐心等待</div>');	
 				 			$('#image').slideDown('fast');
-				 			setTimeout(getNewFile, 500);
+				 			$('#myProgress').show();
+
+				 			setTimeout(getNewFile, 120);
 			 			}
 			 			
 			 		}, 'json').fail(function() {
@@ -104,8 +133,11 @@
 			 			return false;
 			 		}
 					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
+							$('#description').val('');
+
 				 			if(data) {
 				 				$('#result').html('<h4>提交成功，感谢您的工作!</h2>');
+
 				 			} else {
 				 				$('#result').html('<h4>请确保提交正确的数据!</h2>');
 				 			}
@@ -143,8 +175,11 @@
 		<p>对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
 		
 		<div id = 'result' class = 'resultmessage'></div>
-
+	
 		<div id= 'image'  ></div>
+<div id="myProgress">
+   	 <div id="myBar"></div>
+	</div>
 		<textarea id = 'description' name="textarea" rows="3" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
 	
