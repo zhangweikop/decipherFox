@@ -35,14 +35,14 @@ A modern desktop or mobile browser is recommended, e.g Chrome, IE10+, Safari
 #API
 You can also use the API call to upload the file and decipher file.
 
-   POST  /postUpload/file
+   POST  /api/postUpload/file
          
          Request: file0
          Response: {fileId: 'xxxx' }
          
          Description: upload a file, and get a fileId if upload successfully
 
-  POST  /postUploadLong/file
+  POST  /api/postUploadLong/file
          
          Request: file0
          Response: { fileId: 'xxxxx', 
@@ -51,7 +51,7 @@ You can also use the API call to upload the file and decipher file.
          
          Description: upload a file, and wait until the file is deciphered or timeout.
          
-   GET   /getDeciphered/file/{fileId}
+   GET   /api/getDeciphered/file/{fileId}
    
          Response: { fileId: 'xxxxx', 
                      description: 'xxx'
@@ -62,21 +62,30 @@ You can also use the API call to upload the file and decipher file.
                       
                       and the response is {fileId: '123.454', description: '九二三'}
                       
-   GET  /getTask/file
+   GET  /api/getTask/file
    
          Response: { fileId: 'xxx',
                     fileContent: 'XXXXXXXXXXXXXX..XXXXXX'
                   }
           Description: get a original file to decipher.
         
-   POST /postDeciphered/file
+   POST /api/postDeciphered/file
    
          Request: {fileId: xx, fileDescription: '一二三'}
          Response: {true}
          
          Description: send the deciphered result of the file to server.
+         
+   GET  /api/getAllUser
+   	
+   	 Response: [{}..]
+   	 Description: get all users info
    
-
+   GET	/api/getAllImagesInfo
+  
+         Response: {waitings:[], processings:[]}
+         Description: Get all images ino.
+   	
 #USER MANAGEMENT
     
     User file is stored in users/user.txt
