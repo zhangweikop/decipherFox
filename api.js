@@ -170,11 +170,13 @@ router.post('/postUpload/file',function(req, res) {
 router.post('/postDeciphered/file', jsonParser, urlParser, router.normalAuthHandler, function (req, res){
   var reqBody = req.body;
   if(reqBody.fileId) {
-    router.dataStore.finishTask(reqBody.fileId, reqBody.fileDescription);
+    var updated = router.dataStore.finishTask(reqBody.fileId, reqBody.fileDescription);
     router.deferResponseList.sendDeferResponse(reqBody.fileId);
     var userName = req.userName;
-    router.usersInfo.updateUserStats(userName, 1, 0, 1);
-    res.json(true);
+    if(updated) {
+    	router.usersInfo.updateUserStats(userName, 1, 0, 1);
+	} 
+    res.json(updated);
   } else {
     res.json(false);
   }

@@ -99,10 +99,17 @@
 			 	$('#finished').click(function(){
 			 		var fileId = $('#image')[0].dataset.fileId;
 			 		var description = $('#description').val().trim();
+			 		if(!fileId){
+			 			$('#result').html('<h4>请确保提交正确的数据, 而且不要重复提交</h2>');
+			 			return false;
+			 		}
 					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
 				 			if(data) {
 				 				$('#result').html('<h4>提交成功，感谢您的工作!</h2>');
+				 			} else {
+				 				$('#result').html('<h4>请确保提交正确的数据!</h2>');
 				 			}
+				 			$('#image')[0].dataset.fileId = '';
 				 			getNewFile();
 				 		}, 'json').fail(function() {
 						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h4>');

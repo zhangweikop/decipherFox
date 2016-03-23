@@ -75,14 +75,19 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 		return true;
 	}
 	dataStore.finishTask = function(key, description, finishAction) {
-		if(processingStore[key]) {
+		var updated = false;
+		if(processingStore[key] ) {
+			updated = (processingStore[key].status !== 2);
 			processingStore[key].status = 2;
 			processingStore[key].description = description;
 			if(finishAction)
 			{
 				finishAction();
 			}
+		} else {
+			return null;
 		}
+		return updated;
 	};
 	dataStore.fetchFinished = function(key) {
 		if (!processingStore.hasOwnProperty(key)) {

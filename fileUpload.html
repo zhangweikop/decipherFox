@@ -196,21 +196,25 @@
 						continue;
 					}
 						var id = key;
-						var diplay= fileIds[key];
-						$.get( "/api/getDeciphered/file/"+id, function(data) {
-						  if(data.description) {
-						  	//$('#result').hide();	
-						  	delete fileIds[key];
-						  	$(diplay).html('<div class ="resultLabel">Result of File' + id + ' is:</div><div>' + data.description + '</div>');
-						  	$(diplay).css('background-color', '#ff5050');
-						  	//$('#result').slideDown();			
-						  }else {
-						  	$(diplay).text('File ' + id+' is processing');
-						  	//setTimeout(function(){ getDescription(id);} ,200);
-						  }
-						}, 'json').fail(function() {
-							//setTimeout(function(){ getDescription(id);} ,200);
-						 })
+						(function(fid){
+								var diplay= fileIds[fid];
+
+								$.get( "/api/getDeciphered/file/"+fid, function(data) {
+								  if(data.description) {
+								  	//$('#result').hide();	
+								  	delete fileIds[fid];
+								  	$(diplay).html('<div class ="resultLabel">Result of File' + fid + ' is:</div><div>' + data.description + '</div>');
+								  	$(diplay).css('background-color', '#ff5050');
+								  	//$('#result').slideDown();			
+								  }else {
+								  	$(diplay).text('File ' + fid+' is processing');
+								  	//setTimeout(function(){ getDescription(id);} ,200);
+								  }
+								}, 'json').fail(function() {
+									//setTimeout(function(){ getDescription(id);} ,200);
+								 })
+						})(id);
+
 
 					}
 					setTimeout(function(){ getDescription();} ,200);
