@@ -90,3 +90,8 @@ You can also use the API call to upload the file and decipher file.
     
     User file is stored in users/user.txt
     
+#ADMIN
+    	
+     upload a file and wait for the result: /uploadLong
+     upload a file: /upload
+     manage and monitor:   /manager 
