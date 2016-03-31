@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 var express = require('express');
 var basicAuth = require('basic-auth');
-
+var fs = require('fs');
 var router = express.Router();
 var multer = require('multer');
 var bodyParser = require('body-parser');
@@ -182,6 +182,16 @@ router.post('/postDeciphered/file', jsonParser, urlParser, router.normalAuthHand
   }
 });
 
+
+router.post('/practice/postDeciphered/file', jsonParser, urlParser, router.normalAuthHandler, function (req, res){
+  var reqBody = req.body;
+  if(reqBody.fileId) {
+    res.json(true);
+  } else {
+    res.json(false);
+  }
+});
+
 router2.get('*',  function (req, res){
   var id = req.path.split('/').pop();
   if(id) {
@@ -211,6 +221,38 @@ router.get('/getTask/file', router.normalAuthHandler, function (req, res){
   } else {
       res.json(false);
   }
+});
+
+
+router.get('/practice/getTask/file', router.normalAuthHandler, function (req, res){
+  res.set('Cache-control', 'no-cache');
+  var userName = req.userName;
+  var task = router.dataStore.dequeue(userName);
+  
+  fs.readdir('./practiceFiles/', function(err, files){
+  		if(err) {
+  			res.json(false);
+  		} else {
+  			var min = 0 ;
+  			if(files.length == 0) {
+  				res.json(false);
+  				return;
+  			}
+  			var max = files.length-1;
+  			var id =  Math.floor(Math.random() * (max - min + 1)) + min;
+  			var file = files[id];
+  			var filePath = './practiceFiles/' + file;
+  			fs.readFile(filePath, function (err, data) {
+				    if (err) {
+				    	res.json(false);
+				    	return;
+				    }
+				    var key = Date.now()+ 'n' +Math.random();
+				    var content= data.toString('base64');
+            		res.json({fileId: key, fileContent:content});
+				});
+ 		 }
+  });
 });
 
 router.get('/getUserStats', router.normalAuthHandler, function (req, res){

@@ -74,7 +74,36 @@
 			        }
 			    }
 			}
+
+			function setClock() {
+				var color = 'red'; 
+				function startTime() {
+				    var today = new Date();
+				    var h = today.getHours();
+				    var m = today.getMinutes();
+				    var s = today.getSeconds();
+				    m = checkTime(m);
+				    s = checkTime(s);
+				    var timeHTML =   h + ":" + m + ":" + s;
+				    $('#clock').html(timeHTML);
+				    if(color == 'red') {
+				    	color = 'black'
+				    } else {
+				    	color = 'red';
+				    }
+				    $('#clock').css('color',color);
+
+				    var t = setTimeout(startTime, 500);
+				}
+				function checkTime(i) {
+				    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+				    return i;
+				}
+				startTime();
+			}
 						$(document).ready(function(){
+
+							setClock();
 							moveProgress();
 				$('#logoutButton').click(function(){
 					document.execCommand('ClearAuthenticationCache');
@@ -170,9 +199,9 @@
     		<input type="submit" id = 'logoutButton' value="重新登录">
 			</form>
 			</div>
+			<p><b id='clock'></b></p>
 		<p>请在文本框中输入图片验证码的信息，当完成后，<b>按回车或者点击下方的“完成” 按钮</b></p>
-		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。</p>
-		<p>对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
+		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。 对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
 		
 		<div id = 'result' class = 'resultmessage'></div>
 	
@@ -180,7 +209,7 @@
 <div id="myProgress">
    	 <div id="myBar"></div>
 	</div>
-		<textarea id = 'description' name="textarea" rows="3" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
+		<textarea id = 'description' name="textarea" rows="2" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
 	
 		

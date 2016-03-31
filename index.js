@@ -135,7 +135,19 @@ app.get('/decipher', authNormalUser, function (req, res, next) {
   });
 });
 
+var htmlPractice = 'PracticedecipherFile.html';
 
+app.get('/practice/decipher', authNormalUser, function (req, res, next) {
+  res.sendFile(htmlPractice, options, function (err) {
+    if (err) {
+      console.log(err);
+      res.status(err.status).end();
+    }
+    else {
+      //console.log('Sent:', fileName);
+    }
+  });
+});
 
 app.get('*', function(req, res){
   res.status(404).send('page not found!');
