@@ -6,20 +6,10 @@
 
 2. install some packages
    goto the root directory in the windows command line or linux bash
-   a. install expressjs using following command:
-   
-         npm install express
+
+        npm  install 
       
-   b. install body-parser package using following command:
-   
-         npm install body-parser
-      
-   c. install Multer using following command:
-   
-         npm install multer
-   d. install basic-auth using following command:
-   
-		 npm install basic-auth
+
 
 #run
 in the root directory, type the following command in command line or linux bash
