@@ -13,7 +13,8 @@
 
 #run
 in the root directory, type the following command in command line or linux bash
-   node index.js [portNumber]
+
+    node index.js [portNumber]
 
 
 if you dont specify the portNumber, the default portNumber is 8080
