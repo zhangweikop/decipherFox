@@ -12,19 +12,41 @@ var app = express();
 
 app.use('/scripts', jsResource);
 
+var serverConfig = {};
+try {
+var configString = fs.readFileSync('./config.json', 'utf8');
+  if(configString.length === 0) {
+    configString = '{}';
+  }
+  var serverConfig = JSON.parse(configString);
+  console.log('---------------------------------------')
+  console.log('server config:')
+  for(var key in serverConfig) {
+     console.log(key + ':' + serverConfig[key]);
+  }
+  console.log('---------------------------------------')
+
+}
+catch(err) {
+  serverConfig = {};
+  console.log('The config file is not correct');
+}
+
+
 
 var redisInstance = false;
 var dataStore = {};
 var dataStoreConfiguration = {
-    capacity : 1000,
-    additionalLife: 40*1000,
-    rollbackTime: 120*1000};
+    capacity : serverConfig.capacity || 1000,
+    additionalLife: serverConfig.extrafilelife || 40*1000,
+    rollbackTime:  serverConfig.maxwaitingtime || 120*1000};
+
 if(redisInstance) {
 	//initialize and connect to the Redis Store.
 	// the Redis is recommended to run on Linux.
 } else {
 	simpleDataStore(dataStore, dataStoreConfiguration);
-	apiRouter.initializeDataStore(dataStore);
+	apiRouter.initializeRouter(dataStore, serverConfig.posttimeout || 120*1000);
 }
 
 

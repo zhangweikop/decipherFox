@@ -1,0 +1,6 @@
+{
+  "capacity":1000,
+  "extrafilelife":40000,
+  "maxwaitingtime":120000,
+  "posttimeout":120000
+}

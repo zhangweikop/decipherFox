@@ -125,6 +125,9 @@
 				}
 				updateScore();
 			 	function getNewFile(){
+			 		$('#image').html('下载......');
+			 		$('#description').prop( "disabled", false);
+			 		$('#finished').prop( "disabled", false);
 			 		updateScore();
 			 		$.get( '/api/getTask/file', function(data) {
 			 			if(data) {
@@ -155,13 +158,18 @@
 				 });
 			 	}
 			 	$('#finished').click(function(){
+ 			 		$('#image').html('上传中......');
+
+			 		$('#description').prop( "disabled", true);
+			 		$('#finished').prop( "disabled", true);
+
 			 		var fileId = $('#image')[0].dataset.fileId;
 			 		var description = $('#description').val().trim();
 			 		if(!fileId){
 			 			$('#result').html('<h4>请确保提交正确的数据, 而且不要重复提交</h2>');
 			 			return false;
 			 		}
-					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
+ 					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
 							$('#description').val('');
 
 				 			if(data) {
@@ -173,8 +181,13 @@
 				 			$('#image')[0].dataset.fileId = '';
 				 			getNewFile();
 				 		}, 'json').fail(function() {
-						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h4>');
+				 			$('#image').html('上传失败');
+
+				 			$('#description').prop( "disabled", false);
+			 				$('#finished').prop( "disabled", false);
+						  	$('#result').html('<h4>提交出错，请再次点击完成按钮， 或刷新页面</h4>');
 					 });
+ 
 				 	});
 
 			 	getNewFile();

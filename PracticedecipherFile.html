@@ -126,6 +126,9 @@
 				updateScore();
 			 	function getNewFile(){
 			 		updateScore();
+			 		$('#image').html('下载......');
+			 		$('#description').prop( "disabled", false);
+			 		$('#finished').prop( "disabled", false);
 			 		$.get( '/api/practice/getTask/file', function(data) {
 			 			if(data) {
 			 				var imageSrc = data.fileContent;
@@ -155,6 +158,10 @@
 				 });
 			 	}
 			 	$('#finished').click(function(){
+			 		$('#image').html('上传中......');
+
+			 		$('#description').prop( "disabled", true);
+			 		$('#finished').prop( "disabled", true);
 			 		var fileId = $('#image')[0].dataset.fileId;
 			 		var description = $('#description').val().trim();
 			 		if(!fileId){
@@ -173,7 +180,11 @@
 				 			$('#image')[0].dataset.fileId = '';
 				 			getNewFile();
 				 		}, 'json').fail(function() {
-						  	$('#result').html('<h4>提交出错，请再次点击完成按钮</h4>');
+				 				$('#image').html('上传失败');
+
+				 				$('#description').prop( "disabled", false);
+			 				$('#finished').prop( "disabled", false);
+						  	$('#result').html('<h4>提交出错，请再次点击完成按钮或刷新页面</h4>');
 					 });
 				 	});
 

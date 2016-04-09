@@ -16,9 +16,10 @@ var jsonParser = bodyParser.json(); // for parsing application/json
 var urlParser = bodyParser.urlencoded({ extended: true }); // for parsing application/x-www-form-urlencoded
 
 //some configuration
-var longPostTimeOut = 80*1000;
-router.initializeDataStore = function(dataStore) {
+router.longPostTimeOut = 120*1000;
+router.initializeRouter = function(dataStore, postTimeout) {
   router.dataStore = dataStore;
+  router.longPostTimeOut = postTimeout || 120*1000;
 }
 
  
@@ -38,7 +39,7 @@ router.initializeDeferResponseList = function(deferResponseList){
 	          		});
 				}
 			
-				}, longPostTimeOut);
+				}, router.longPostTimeOut);
   		this.once(fileId, function(fileDescription){
 	     var description = router.dataStore.fetchFinished(fileId);
 	      if(description === false || description=== null) {
@@ -116,7 +117,6 @@ router.get('/logout', function (req, res){
 router.post('/postUploadLong/file', uploadMul.any());
 router.post('/postUploadLong/file',function(req, res) {
   //console.log(uploadMul.array())   
-
   if(!req.files || (req.files && req.files.length<=0)) {
     res.json(false);
 

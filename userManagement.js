@@ -1,17 +1,24 @@
 var fs = require('fs');
 function loadUserInfo (clearScore, backUpInterval) {
+ 
+var usersObject ={};
+try{
   var jsonString = fs.readFileSync('./users/user.txt', 'utf8');
   if(jsonString.length === 0) {
-    jsonString === '{}';
+    jsonString = '{}';
   }
   var usersObject = JSON.parse(jsonString);
+}
+  catch(err) {
+  usersObject = {};
+  console.log('The user file is not correct');
+}
   for(var user in usersObject) {
     if(usersObject.hasOwnProperty(user)) {
       if(clearScore || !usersObject.total) {
        usersObject[user].total = 0;
        usersObject[user].correct = 0;
        usersObject[user].unvirified = 0;
-
       } 
     }
   }
