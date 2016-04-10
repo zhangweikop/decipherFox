@@ -129,6 +129,7 @@
 			 		$('#image').html('下载......');
 			 		$('#description').prop( "disabled", false);
 			 		$('#finished').prop( "disabled", false);
+			 		 $('#description').focus();
 			 		$.get( '/api/practice/getTask/file', function(data) {
 			 			if(data) {
 			 				var imageSrc = data.fileContent;
@@ -184,6 +185,7 @@
 
 				 				$('#description').prop( "disabled", false);
 			 				$('#finished').prop( "disabled", false);
+			 				 $('#description').focus();
 						  	$('#result').html('<h4>提交出错，请再次点击完成按钮或刷新页面</h4>');
 					 });
 				 	});
