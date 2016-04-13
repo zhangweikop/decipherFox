@@ -125,7 +125,7 @@
 				}
 				updateScore();
 			 	function getNewFile(){
-			 		$('#image').html('下载......');
+			 		$('#status').html('下载......');
 			 		$('#description').prop( "disabled", false);
 			 		$('#finished').prop( "disabled", false);
 			 		$('#description').focus();
@@ -136,6 +136,7 @@
 				 			var fileId = data.fileId;
 				 			var img = new Image();
 				 			img.src = 'data:image/jpeg;base64,' + imageSrc;
+							$('#status').html('就绪');
 				 			$('#image').hide();
 				 			$('#image').html('');
 				 			$('#image')[0].dataset.fileId = fileId;
@@ -159,7 +160,8 @@
 				 });
 			 	}
 			 	$('#finished').click(function(){
- 			 		$('#image').html('上传中......');
+					$('#status').html('上传中......');
+ 			 		$('#image').html('');
 
 			 		$('#description').prop( "disabled", true);
 			 		$('#finished').prop( "disabled", true);
@@ -225,7 +227,7 @@
 	</div>
 		<textarea id = 'description' name="textarea" rows="2" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
-	
+		<div id = 'status'></div>
 		
 		<div id = 'userStats'></div>
 
