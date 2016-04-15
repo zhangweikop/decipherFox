@@ -82,7 +82,7 @@ app.get('/', function (req, res, next) {
   res.sendFile(htmlHome, options, function (err) {
     if (err) {
       console.log(err);
-      res.status(err.status).end();
+      res.status(500).send('Internal Error!');
     }
     else {
       //console.log('Sent:', fileName);
@@ -98,7 +98,7 @@ app.get('/upload',  function (req, res, next) {
   res.sendFile(htmlUpload, options, function (err) {
     if (err) {
       console.log(err);
-      res.status(err.status).end();
+      res.status(500).send('Internal Error!');
     }
     else {
       //console.log('Sent:', fileName);
@@ -112,7 +112,7 @@ app.get('/uploadLong', function (req, res, next) {
   res.sendFile(htmlUpload2, options, function (err) {
     if (err) {
       console.log(err);
-      res.status(err.status).end();
+      res.status(500).send('Internal Error!');
     }
     else {
       //console.log('Sent:', fileName);
@@ -126,7 +126,7 @@ app.get('/manager', authAdMinUser, function (req, res, next) {
   res.sendFile(htmlManager, options, function (err) {
     if (err) {
       console.log(err);
-      res.status(err.status).end();
+      res.status(500).send('Internal Error!');
     }
     else {
       //console.log('Sent:', fileName);
@@ -149,7 +149,8 @@ app.get('/decipher', authNormalUser, function (req, res, next) {
   res.sendFile(htmlDecipher, options, function (err) {
     if (err) {
       console.log(err);
-      res.status(err.status).end();
+      res.status(500).send('Internal Error!');
+
     }
     else {
       //console.log('Sent:', fileName);
@@ -163,7 +164,8 @@ app.get('/practice/decipher', authNormalUser, function (req, res, next) {
   res.sendFile(htmlPractice, options, function (err) {
     if (err) {
       console.log(err);
-      res.status(err.status).end();
+      res.status(500).send('Internal Error!');
+
     }
     else {
       //console.log('Sent:', fileName);
