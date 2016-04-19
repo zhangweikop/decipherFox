@@ -132,6 +132,11 @@
 			 				var imageSrc = data.fileContent;
 				 			var fileId = data.fileId;
 				 			var img = new Image();
+							img.onload = function(){
+								const scale = 2;
+								var h = img.height; var w = img.width;
+								img.height = scale*h; img.width = scale*w;
+							};
 				 			img.src = 'data:image/jpeg;base64,' + imageSrc;
 				 			$('#image').hide();
 				 			$('#image').html('');
