@@ -6,8 +6,17 @@
 		<style>
 		</style>
 		<script src="/scripts/jquery.min.js"></script>
+		<script>
+		function checkBrowserVersion(){
+			var result = navigator.userAgent.toUpperCase().match(/MSIE\s*(\d+)/);
+			if(result != null && parseInt(result[1]) < 10) {
+				document.write("<p><h2>浏览器版本不兼容!</h2></p>");
+				document.write("<p><h3>请使用IE10以上版本，Chrome, Safari或Firefox</h3></p>");
+			}
+		}
+</script>
 	</head>
-	<body>
+	<body onload="checkBrowserVersion()">
 	
 		<div style = 'margin: 20px 0px; font-size: 200%'><a href="/decipher">解码文件 decipher file in the system</a></div>
 		<div><a href="/practice/decipher">模拟练习 <b>（这只是练习）</b></a></div>
