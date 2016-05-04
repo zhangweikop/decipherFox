@@ -158,6 +158,20 @@ app.get('/decipher', authNormalUser, function (req, res, next) {
   });
 });
 
+var htmlDecipherM = 'decipherFileM.html';
+app.get('/decipherM', authNormalUser, function (req, res, next) {
+  res.sendFile(htmlDecipherM, options, function (err) {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Internal Error!');
+
+    }
+    else {
+      //console.log('Sent:', fileName);
+    }
+  });
+});
+
 var htmlPractice = 'PracticedecipherFile.html';
 
 app.get('/practice/decipher', authNormalUser, function (req, res, next) {
