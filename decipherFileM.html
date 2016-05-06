@@ -54,7 +54,7 @@
 		#containerTable{
 			height: 45%;
 			position:fixed;
-			bottom: 5px;
+			bottom: 4%;
 			left: 1%;
 			right: 1%;
 		}
@@ -80,13 +80,13 @@
 			margin: 0;
 		}
 		button.keyboard:active{
-			background-color:#00FF00;
+			background-color:#E0E0E0;
 		}
 		button.keyboard{
 
 			font-size: 16pt;
 			border-style: none;
-			background-color:#FFFAF0;
+			background-color:#FCFCFC;
 			width: 100%;
 			height: 100%;
 		}
@@ -257,30 +257,30 @@
 <div id="myProgress">
    	 <div id="myBar"></div>
 	</div>
-		<textarea id = 'description' name="textarea" rows="1" maxlength="8" disabled="disabled" style= "border: 2px solid #4d79ff;font-size:1.5em;color:#FF2D2D" placeholder="请用小键盘输入"></textarea>
+		<textarea id = 'description' name="textarea" rows="1" maxlength="8" readonly="readonly" style= "border: 2px solid #4d79ff;font-size:1.5em;color:#FF5151" placeholder="请用小键盘输入"></textarea>
 
 	<div id="containerTable">
 		<div id="containerCenter">
 			<table>
 			  <tr>
-				<td><button class="keyboard" onClick="handleInput(1)">1</button></td>
-				<td><button class="keyboard" onClick="handleInput(2)">2</button></td>
-				<td><button class="keyboard" onClick="handleInput(3)">3</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(1)">1</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(2)">2</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(3)">3</button></td>
 			  </tr>
 			  <tr>
-				<td><button class="keyboard" onClick="handleInput(4)">4</button></td>
-			    <td><button class="keyboard" onClick="handleInput(5)">5</button></td>
-				<td><button class="keyboard" onClick="handleInput(6)">6</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(4)">4</button></td>
+			    <td><button class="keyboard" onTouchStart="handleInput(5)">5</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(6)">6</button></td>
 			  </tr>
 			  <tr>
-				<td><button class="keyboard" onClick="handleInput(7)">7</button></td>
-			    <td><button class="keyboard" onClick="handleInput(8)">8</button></td>
-				<td><button class="keyboard" onClick="handleInput(9)">9</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(7)">7</button></td>
+			    <td><button class="keyboard" onTouchStart="handleInput(8)">8</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(9)">9</button></td>
 			  </tr>
 				<tr>
-				<td><button class="keyboard" onClick="handleInput('bs')">退格</button></td>
-			    <td><button class="keyboard" onClick="handleInput(0)">0</button></td>
-				<td><button class="keyboard" onClick="handleInput('ok')">提交</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput('bs')">退格</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput(0)">0</button></td>
+				<td><button class="keyboard" onTouchStart="handleInput('ok')">提交</button></td>
 			  </tr>
 			</table>
 		</div>
