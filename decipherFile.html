@@ -111,13 +111,14 @@
 				function updateScore(){
 			 		$.get( '/api/getUserStats', function(data) {
 			 			if(data) {
+						/*
 			 			var html = '<p>工作量统计</p><table>'+
 									  '<tr><th>category</th>'+
 									    '<th>score</th></tr>'+
 									  '<tr><td>总计</td><td>'+ data.total +'</td></tr>'+
 									  '<tr><td>未验证</td> <td>'+ data.unvirified +'</td></tr>'+
 									  '<tr><td>验证正确</td> <td>'+ data.correct +'</td></tr><table>';
-						$('#userStats').html(html);
+						$('#userStats').html(html);*/
 						$('#userName').text(data.userName);
 						}
 			 		}, 'json');
@@ -126,7 +127,7 @@
 				updateScore();
 			 	function getNewFile(){
 			 		$('#description').focus();
-			 		updateScore();
+			 		//updateScore();
 			 		$.get( '/api/getTask/file', function(data) {
 			 			if(data) {
 			 				var imageSrc = data.fileContent;
@@ -166,24 +167,24 @@
 			 		var fileId = $('#image')[0].dataset.fileId;
 			 		var description = $('#description').val().trim();
 			 		if(!fileId){
-			 			$('#result').html('<h4>请确保提交正确的数据, 而且不要重复提交</h2>');
+			 			$('#result').html('请确保提交正确的数据, 而且不要重复提交');
 			 			return false;
 			 		}
  					$.post( '/api/postDeciphered/file', {fileId: fileId, fileDescription: description}, function(data) {
 							$('#description').val('');
 
 				 			if(data) {
-				 				$('#result').html('<h4>提交成功，感谢您的工作!</h2>');
+				 				$('#result').html('提交成功，感谢您的工作!');
 
 				 			} else {
-				 				$('#result').html('<h4>请确保提交正确的数据!</h2>');
+				 				$('#result').html('请确保提交正确的数据!');
 				 			}
 				 			$('#image')[0].dataset.fileId = '';
 				 			getNewFile();
 				 		}, 'json').fail(function() {
 				 			$('#image').html('上传失败');
 			 				$('#description').focus();
-						  	$('#result').html('<h4>提交出错，请再次点击完成按钮， 或刷新页面</h4>');
+						  	$('#result').html('提交出错，请再次点击完成按钮， 或刷新页面');
 					 });
  
 				 	});
@@ -220,7 +221,7 @@
 <div id="myProgress">
    	 <div id="myBar"></div>
 	</div>
-		<textarea id = 'description' name="textarea" rows="2" cols="50"  style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
+		<textarea id = 'description' name="textarea" rows="2" cols="50" maxlength="8" style= "border: 2px solid #4d79ff;font-size: 200%" placeholder="输入图片里的验证码..."></textarea>
 		<div><button type="button" id= 'finished'>完成</button></div>
 	
 		
