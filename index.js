@@ -159,7 +159,7 @@ app.get('/decipher', authNormalUser, function (req, res, next) {
 });
 
 var htmlDecipherM = 'decipherFileM.html';
-app.get('/decipherM', authNormalUser, function (req, res, next) {
+app.get('/decipher_m', authNormalUser, function (req, res, next) {
   res.sendFile(htmlDecipherM, options, function (err) {
     if (err) {
       console.log(err);
