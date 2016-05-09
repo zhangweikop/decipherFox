@@ -294,3 +294,20 @@ router.post('/addNewUser',  jsonParser, urlParser, router.adminAuthHandler, func
   	res.json(false);
   }
 });
+
+router.post('/broadcast', jsonParser, urlParser, router.adminAuthHandler, function (req, res){
+	var reqBody = req.body;
+	if (reqBody.broadcast) {
+		router.broadcast = reqBody.broadcast;
+	}
+	else
+		router.broadcast = "stop";
+	res.status(200).send('OK');
+});
+
+router.get('/getBroadcast', function (req, res){
+	res.set('Cache-control', 'no-cache');
+	if (!router.broadcast || router.broadcast.toLowerCase() == "stop" || router.broadcast.toLowerCase() == "na")
+		router.broadcast = "";
+	res.json({broadcast: router.broadcast});
+});

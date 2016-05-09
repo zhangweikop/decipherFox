@@ -110,6 +110,21 @@
 						$('#result').html('<h4>提交出错，请刷新页面重新操作</h4>');
 					 });
 				});
+
+			$('#sendBroadcast').click(function(){
+				var broadcastMsg = $('#broadcast').val().trim();
+				$.post('/api/broadcast', {broadcast: broadcastMsg}, function(data) {
+					if(!data) {
+						$('#result').html('<h4>广播不成功</h4>');
+					} else {
+						$('#result').html('<h4>广播成功</h4>');
+						$('#result').children().css('color', '#4CAF50');
+					}
+				}, 'text').fail(function() {
+					$('#result').html('<h4>提交出错，请刷新页面重新操作</h4>');
+				});
+			});
+
 			getAll();
 			setInterval(getAll, 1200);
 
@@ -133,6 +148,11 @@
 		<div><input type="password" placeholder = '再次输入密码' style= "border: 2px solid #4d79ff;" id="psw2"></div>
 
 		<div><button type="button" id= 'addNew'>添加新用户</button></div>
+
+		<p>广播：(stop,NA或空表示停止广播)</p>
+		<input type="text" id="broadcast"/>
+		<button type="button" id= 'sendBroadcast'>提交</button>
+
 		<p style = 'font-size:120%'>All Users:</p>
 		<div id='allUsers' style = 'width:410px; float:left'></div>
 		<div id='allfiless' style = 'width:400px; float:left'></div>

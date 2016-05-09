@@ -50,7 +50,11 @@
     		background-color: #d9edf7;
    			 border-color: #bce8f1;
 		}
-
+		.broadcastmessage{
+			padding: 3px;
+			font-weight: bold;
+			color: #FF0000;
+		}
 		#containerTable{
 			height: 45%;
 			position:fixed;
@@ -111,6 +115,20 @@
 			            elem.style.width = width + '%'; 
 			        }
 			    }
+			}
+
+			function getBroadcast() {
+				$.get('/api/getBroadcast', function(data) {
+					if(data && data.broadcast) {
+						$('#broadcast').text("广播：" + data.broadcast);
+						$('#broadcast').slideDown('fast');
+					} else {
+						$('#broadcast').hide();
+					}
+					setTimeout(getBroadcast, 5000);
+				}, 'json').fail(function() {
+					setTimeout(getBroadcast, 5000);
+				});
 			}
 
 			function setClock() {
@@ -209,7 +227,7 @@
 
 				}
 				updateScore();
-
+				getBroadcast();
 
 
 			 	getNewFile();
@@ -250,7 +268,7 @@
 			</form>
 			<b id='clock'></b>
 		</div>
-
+		<div id = 'broadcast' class = 'broadcastmessage' hidden></div>
 		<div id = 'result' class = 'resultmessage'></div>
 	
 		<div id= 'image'  ></div>

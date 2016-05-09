@@ -45,6 +45,11 @@
     		background-color: #d9edf7;
    			 border-color: #bce8f1;
 		}
+		.broadcastmessage{
+			padding: 3px;
+			font-weight: bold;
+			color: #FF0000;
+		}
 		table {
 			    width: 400px;
 			}
@@ -75,6 +80,19 @@
 			    }
 			}
 
+			function getBroadcast() {
+				$.get('/api/getBroadcast', function(data) {
+					if(data && data.broadcast) {
+						$('#broadcast').text("广播：" + data.broadcast);
+						$('#broadcast').slideDown('fast');
+					} else {
+						$('#broadcast').hide();
+					}
+					setTimeout(getBroadcast, 5000);
+				}, 'json').fail(function() {
+					setTimeout(getBroadcast, 5000);
+				});
+			}
 			function setClock() {
 				var color = 'red'; 
 				function startTime() {
@@ -125,6 +143,8 @@
 
 				}
 				updateScore();
+				getBroadcast();
+
 			 	function getNewFile(){
 			 		$('#description').focus();
 			 		//updateScore();
@@ -215,6 +235,7 @@
 		<p>请在文本框中输入图片验证码的信息，当完成后，<b>按回车或者点击下方的“完成” 按钮</b></p>
 		<p>结果将自动发回服务器，并显示一张新的图片来等待你处理。 对于每张图片，请尽量在一分钟内完成处理。否则图片将被重新放入队列，分配给其他人处理</p>
 		
+		<div id = 'broadcast' class = 'broadcastmessage' hidden></div>
 		<div id = 'result' class = 'resultmessage'></div>
 	
 		<div id= 'image'  ></div>
