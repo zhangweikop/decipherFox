@@ -50,12 +50,6 @@
 			left: 1%;
 			right: 1%;
 		}
-		#containerCenter{
-			background-color:#DFDFDF;
-			width: 100%;
-			height: 100%;
-			margin: 0;
-		}
 		table{
 			width: 100%;
 			height: 100%;
@@ -71,9 +65,7 @@
 			padding: 0;
 			margin: 0;
 		}
-		button.keyboard:active{
-			background-color:#E0E0E0;
-		}
+
 		button.keyboard{
 
 			font-size: 16pt;
@@ -163,7 +155,6 @@
 
 			function handleInput(val){
 				var ori = $("#description").val();
-				console.log(val);
 				if (val == "bs") {
 					if (ori.length < 1)
 						return;
@@ -177,14 +168,18 @@
 				}
 			}
 
-						$(document).ready(function(){
-//fake
-    var p=document.getElementsByTagName('button');
-    for(var i=0;i<p.length;i++){
-        p[i].addEventListener('touchstart',function(){},false);
-    }
+			$(document).ready(function(){
+				$('.keyboard').on('touchstart', function(e){
+					$(e.target).css('background-color', '#E0E0E0');
+					handleInput(e.target.value);
+					return false;
+				});
+				$('.keyboard').on('touchend', function(e){
+					$('.keyboard').css('background-color', '#FCFCFC');
+					return false;
+				});
 
-							setClock();
+				setClock();
 				$('#logoutButton').click(function(){
 					document.execCommand('ClearAuthenticationCache');
 				})
@@ -245,30 +240,28 @@
 		<textarea id = 'description' name="textarea" rows="1" maxlength="8" readonly="readonly" style= "border: 2px solid #4d79ff;font-size:1.5em;color:#FF5151" placeholder="请用小键盘输入"></textarea>
 
 	<div id="containerTable">
-		<div id="containerCenter">
-			<table>
-			  <tr>
-				<td><button class="keyboard" onTouchStart="handleInput(1)">1</button></td>
-				<td><button class="keyboard" onTouchStart="handleInput(2)">2</button></td>
-				<td><button class="keyboard" onTouchStart="handleInput(3)">3</button></td>
-			  </tr>
-			  <tr>
-				<td><button class="keyboard" onTouchStart="handleInput(4)">4</button></td>
-			    <td><button class="keyboard" onTouchStart="handleInput(5)">5</button></td>
-				<td><button class="keyboard" onTouchStart="handleInput(6)">6</button></td>
-			  </tr>
-			  <tr>
-				<td><button class="keyboard" onTouchStart="handleInput(7)">7</button></td>
-			    <td><button class="keyboard" onTouchStart="handleInput(8)">8</button></td>
-				<td><button class="keyboard" onTouchStart="handleInput(9)">9</button></td>
-			  </tr>
-				<tr>
-				<td><button class="keyboard" onTouchStart="handleInput('bs')">退格</button></td>
-				<td><button class="keyboard" onTouchStart="handleInput(0)">0</button></td>
-				<td><button class="keyboard" onTouchStart="handleInput('ok')">提交</button></td>
-			  </tr>
-			</table>
-		</div>
-</div>
+		<table>
+		  <tr>
+			<td><button class="keyboard" value="1">1</button></td>
+			<td><button class="keyboard" value="2">2</button></td>
+			<td><button class="keyboard" value="3">3</button></td>
+		  </tr>
+		  <tr>
+			<td><button class="keyboard" value="4">4</button></td>
+			<td><button class="keyboard" value="5">5</button></td>
+			<td><button class="keyboard" value="6">6</button></td>
+		  </tr>
+		  <tr>
+			<td><button class="keyboard" value="7">7</button></td>
+			<td><button class="keyboard" value="8">8</button></td>
+			<td><button class="keyboard" value="9">9</button></td>
+		  </tr>
+			<tr>
+			<td><button class="keyboard" value="bs">退格</button></td>
+			<td><button class="keyboard" value="0">0</button></td>
+			<td><button class="keyboard" value="ok">提交</button></td>
+		  </tr>
+		</table>
+	</div>
 	</body>
 </html>
