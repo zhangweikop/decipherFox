@@ -182,7 +182,8 @@
 				 });
 			 	}
 			 	$('#finished').click(function(){
- 			 		$('#image').html('上传中......');
+ 			 		$('#image').html('');
+					$('#result').html('上传中......');
 
 			 		var fileId = $('#image')[0].dataset.fileId;
 			 		var description = $('#description').val().trim();
@@ -202,7 +203,6 @@
 				 			$('#image')[0].dataset.fileId = '';
 				 			getNewFile();
 				 		}, 'json').fail(function() {
-				 			$('#image').html('上传失败');
 			 				$('#description').focus();
 						  	$('#result').html('提交出错，请再次点击完成按钮， 或刷新页面');
 					 });
