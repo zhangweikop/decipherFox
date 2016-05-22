@@ -8,10 +8,21 @@
 		<script src="/scripts/jquery.min.js"></script>
 		<script>
 		function checkBrowserVersion(){
-			var result = navigator.userAgent.toUpperCase().match(/MSIE\s*(\d+)/);
+			var ua = navigator.userAgent.toUpperCase();
+			var result = ua.match(/MSIE\s*(\d+)/);
+
 			if(result != null && parseInt(result[1]) < 10) {
 				document.write("<p><h2>浏览器版本不兼容!</h2></p>");
 				document.write("<p><h3>请使用IE10以上版本，Chrome, Safari或Firefox</h3></p>");
+				return;
+			}
+			if(ua.indexOf('UCWEB') > -1 || ua.indexOf('UCBROW') > -1) {//UCWeb, UCBrowser
+				document.write("<p><h2>请勿使用UC浏览器!</h2></p>");
+				return;
+			}
+			if(ua.indexOf('MICROME') > -1) {//MicroMessenger
+				document.write("<p><h2>请勿在微信中打开此网页!</h2></p>");
+				return;
 			}
 		}
 </script>
