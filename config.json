@@ -1,6 +1,6 @@
 {
   "capacity":1000,
-  "extrafilelife":40000,
+  "extrafilelife":-1,
   "maxwaitingtime":120000,
   "posttimeout":120000
 }

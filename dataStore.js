@@ -49,12 +49,15 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 		var waitings = [];
 		var processings = [];
 		for(var i = 0; i < store.length; i++) {
-			waitings.push(store[i].key);
+			waitings.push({key: store[i].key, enqueueTime: store[i].enqueueTime});
 		}
 		for(var key in processingStore){
 			if(processingStore.hasOwnProperty(key))
 			{
-			 processings.push({key: key, worker: processingStore[key].worker, status: processingStore[key].status});
+			 processings.push({key: key, worker: processingStore[key].worker, status: processingStore[key].status,
+								enqueueTime: processingStore[key].enqueueTime,
+								dequeueTime: processingStore[key].dequeueTime,
+								finishTime: processingStore[key].finishTime});
 			}
 		}
 		return{waitings: waitings, processings:processings};
@@ -64,7 +67,7 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 		dataStore.messager.emit('remove'+key);
 	}
 	dataStore.enqueue = function(key, value, removeAction) {
-		store.push({key:key, value: value, status:0});
+		store.push({key:key, value: value, status:0, enqueueTime: Date.now()});
 		if(removeAction) {
 			dataStore.messager.once('remove'+key, removeAction);
 		}
@@ -80,6 +83,7 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 			updated = (processingStore[key].status !== 2);
 			processingStore[key].status = 2;
 			processingStore[key].description = description;
+			processingStore[key].finishTime = Date.now();
 			if(finishAction)
 			{
 				finishAction();
@@ -95,10 +99,13 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 		}
 		if(processingStore[key].status == 2) {
 			processingStore[key].status = 3;
-			var finishKey = key;
-			setTimeout(function() {
-				delete processingStore[finishKey];
-			},dataStoreConfiguration.additionalLife);
+
+			if (dataStoreConfiguration.additionalLife > 0) {
+				var finishKey = key;
+				setTimeout(function() {
+					delete processingStore[finishKey];
+				},dataStoreConfiguration.additionalLife);
+			}
 			return processingStore[key].description;
 		} else {
 			return null;
@@ -113,7 +120,9 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 				foundOne = false;
 				task = null;
 			} else {
-				processingStore[task.key] = {value: task.value, status: 1, description: null, worker: worker};
+				processingStore[task.key] = {value: task.value, status: 1, description: null, worker: worker,
+											enqueueTime: task.enqueueTime,
+											dequeueTime: Date.now()};
 				var oldTask = task;
 				setTimeout(function() {
 					if(processingStore[oldTask.key] && (processingStore[oldTask.key].status === 1)) {

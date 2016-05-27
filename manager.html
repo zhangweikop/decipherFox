@@ -45,7 +45,7 @@
 							    '<tr><td>用户名</td><td>'+ data.userName +'</td></tr>'+
 							  '<tr><td>总计</td><td>'+ data.total +'</td></tr>'+
 							  '<tr><td>未验证</td> <td>'+ data.unvirified +'</td></tr>'+
-							  '<tr><td>验证正确</td> <td>'+ data.correct +'</td></tr><table>';
+							  '<tr><td>验证正确</td> <td>'+ data.correct +'</td></tr></table>';
 					  		$('#allUsers').append(html);
 						}
 					}
@@ -59,29 +59,32 @@
 						var html = '<p>系统当前文件信息</p><table>'+
 							  '<tr><th>文件</th>'+
 							  '<th>创建时间</th>'+
+							  '<th>排队时间</th>'+
+							  '<th>用户时间</th>'+
 							   '<th>状态</th>'+
 							    '<th>当前工作者</th></tr>';
 						for(var i =0; i< processings.length;i++) {
 							var key = processings[i].key;
-							var timestamp = key.split('n')[0];
-							var seconds = (Date.now()-parseFloat(timestamp))/1000;
+							var timeString = new Date(processings[i].enqueueTime).toLocaleTimeString();
+							var queueTime = (processings[i].dequeueTime - processings[i].enqueueTime)/1000;
+							var processTime = processings[i].finishTime ? (processings[i].finishTime - processings[i].dequeueTime)/1000 : '-';
 							var worker = processings[i].worker;
 							var status = '处理中';
 							if(processings[i].status===2) {
 								status = '处理完成'
 							}
 							if(processings[i].status>2) {
-								status = '结果已被成功读取'
+								status = '已读取'
 							}
-						html+= '<tr><td><a target="_blank" href="/viewFile/'+key+'">'+ key +'</a></td><td>'+ seconds+' ago' +'</td><td>'+status+'</td><td>'+(worker||'') +'</td></tr>';
+						html+= '<tr><td><a target="_blank" href="/viewFile/'+key+'">'+ key +'</a></td><td>'+ timeString +'</td><td>'+queueTime +'</td><td>' +processTime + '</td><td>'+status+'</td><td>'+(worker||'') +'</td></tr>';
 
 						}	
 						for(var i=0; i< waitings.length;i++) {
-							var key = waitings[i];
-							var timestamp = key.split('n')[0];
-							var seconds = (Date.now()-parseFloat(timestamp))/1000;
-						html+= '<tr><td><a target="_blank" href="/viewFile/'+key+'">'+ key +'</a></td><td>'+ seconds+' ago' +'</td><td>等待处理</td><td>'+('') +'</td></tr>';
+							var key = waitings[i].key;
+							var timeString = new Date(waitings[i].enqueueTime).toLocaleTimeString();
+						html+= '<tr><td><a target="_blank" href="/viewFile/'+key+'">'+ key +'</a></td><td>'+ timeString +'</td><td>-</td><td>-</td><td>等待处理</td><td>'+('') +'</td></tr>';
 						}
+						html+='</table>';
 						$('#allfiless').append(html);	
 					}
 				});
@@ -113,6 +116,7 @@
 
 			$('#sendBroadcast').click(function(){
 				var broadcastMsg = $('#broadcast').val().trim();
+				$('#broadcast').val('');
 				$.post('/api/broadcast', {broadcast: broadcastMsg}, function(data) {
 					if(!data) {
 						$('#result').html('<h4>广播不成功</h4>');
@@ -126,7 +130,7 @@
 			});
 
 			getAll();
-			setInterval(getAll, 1200);
+			setInterval(getAll, 5000);
 
 												
 			});
@@ -155,7 +159,7 @@
 
 		<p style = 'font-size:120%'>All Users:</p>
 		<div id='allUsers' style = 'width:410px; float:left'></div>
-		<div id='allfiless' style = 'width:400px; float:left'></div>
+		<div id='allfiless' style = 'width:700px; float:left'></div>
 		<div style = 'clear:left'></div>
 
 	</body>
