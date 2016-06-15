@@ -311,3 +311,8 @@ router.get('/getBroadcast', function (req, res){
 		router.broadcast = "";
 	res.json({broadcast: router.broadcast});
 });
+
+router.get('/dumpToFiles', router.adminAuthHandler, function (req, res){
+	res.set('Cache-control', 'no-cache');
+	res.json(router.dataStore.dumpToFiles());
+});

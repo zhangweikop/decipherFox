@@ -129,6 +129,22 @@
 				});
 			});
 
+			$('#dumpToFiles').click(function(){
+				if (!confirm("警告：\n确定要把文件导出到服务器吗？？？")) {
+					return;
+				}
+				$('#result').html('');
+				$.get('/api/dumpToFiles', function(data) {
+					if(data) {
+						$('#result').html('<h4>导出文件成功</h4>');
+					} else {
+						$('#result').html('<h4>导出文件不成功</h4>');
+					}
+				}, 'json').fail(function(){
+						$('#result').html('<h4>导出文件不成功</h4>');
+				});
+			});
+
 			getAll();
 			setInterval(getAll, 5000);
 
@@ -156,6 +172,7 @@
 		<p>广播：(stop,NA或空表示停止广播)</p>
 		<input type="text" id="broadcast"/>
 		<button type="button" id= 'sendBroadcast'>提交</button>
+		<p><button type="button" id= 'dumpToFiles'>导出文件到服务器(请谨慎使用)</button></p>
 
 		<p style = 'font-size:120%'>All Users:</p>
 		<div id='allUsers' style = 'width:410px; float:left'></div>

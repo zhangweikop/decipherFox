@@ -1,6 +1,7 @@
 "use strict";
 var EventEmitter = require('events');
 var eventEmitter = new EventEmitter.EventEmitter();
+var fs = require('fs');
 
 function dataStoreWraper(dataStore, dataStoreConfiguration) {
 	if(!dataStore.store) {
@@ -62,6 +63,32 @@ function dataStoreWraper(dataStore, dataStoreConfiguration) {
 		}
 		return{waitings: waitings, processings:processings};
 	}
+	dataStore.dumpToFiles = function () {
+		var processing;
+		var i = 1;
+		var filename = "", folder = "./dump" + Date.now();
+		try {fs.rmdirSync(folder);} catch(err){}
+		try {fs.mkdirSync(folder);} catch(err){return false}
+
+		for(var key in processingStore){
+			if (processingStore.hasOwnProperty(key))
+			{
+				processing = processingStore[key];
+				var date = new Date(processing.enqueueTime);
+				filename = folder + "/" + i + "-" + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds();
+				var queueTime = (processingStore[key].dequeueTime - processing.enqueueTime)/1000;
+				var processTime = processing.finishTime ? (processing.finishTime - processing.dequeueTime)/1000 : 'X';
+				filename += "-" + queueTime + "-" + processTime + "-" + processing.worker + "-" + (processing.description || "X") + ".bmp";
+				try {
+					fs.writeFileSync(filename, processing.value, 'base64');
+				} catch (err) {
+				}
+				i++;
+			}
+		}
+		return true;
+	}
+
 	//try remove from the data store
 	dataStore.tryRemove = function(key) {
 		dataStore.messager.emit('remove'+key);
